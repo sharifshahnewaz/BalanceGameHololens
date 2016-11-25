@@ -17,6 +17,8 @@ StudyData/
 *.pidb
 *.booproj
 *.unitypackage
+*-balance-*.csv
+*-balance-*.txt
 
 # Unity3D generated meta files
 *.pidb.meta
