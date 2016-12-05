@@ -12,7 +12,7 @@ namespace HoloToolkit.Sharing
         [MenuItem("HoloToolkit/Sharing Service/Launch Sharing Service", false, 100)]
         public static void LaunchSessionServer()
         {
-            string filePathName = @"External\HoloToolkit\Sharing\Server\SharingService.exe";
+            string filePathName = @"Assets\HoloToolkit\Sharing\Server\SharingService.exe";
 
             if (!File.Exists(filePathName))
             {
