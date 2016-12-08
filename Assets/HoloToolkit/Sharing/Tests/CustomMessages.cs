@@ -16,6 +16,7 @@ public class CustomMessages : Singleton<CustomMessages>
     public enum TestMessageID : byte
     {
         HeadTransform = MessageID.UserMessageIDStart,
+        NetworkMessage,
         Max
     }
 
@@ -124,6 +125,26 @@ public class CustomMessages : Singleton<CustomMessages>
                 MessageChannel.Avatar);
         }
     }
+
+    public void SendNetworkMessage(string comd)
+    {
+		// If we are connected to a session, broadcast our head info
+		if (this.serverConnection != null && this.serverConnection.IsConnected())
+		{
+			// Create an outgoing network message to contain all the info we want to send
+			NetworkOutMessage msg = CreateMessage((byte)TestMessageID.NetworkMessage);
+
+			msg.Write(comd);
+			//Debug.Log ("cm command : " + comd + " is sending...");
+			// Send the message as a broadcast, which will cause the server to forward it to all other users in the session.  
+			this.serverConnection.Broadcast(
+				msg,
+				MessagePriority.Medium,
+				MessageReliability.ReliableOrdered,
+				MessageChannel.Avatar);
+            //Debug.Log(msg);
+		}
+	}
 
     void OnDestroy()
     {

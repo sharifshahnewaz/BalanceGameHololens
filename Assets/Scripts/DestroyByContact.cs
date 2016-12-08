@@ -11,11 +11,9 @@ public class DestroyByContact : MonoBehaviour
 	
 	void Start ()
 	{
-		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
-		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent <GameController> ();
-		}
-		if (gameController == null) {
+        gameController = FindObjectOfType(typeof(GameController)) as GameController;
+
+        if (gameController == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
@@ -26,7 +24,7 @@ public class DestroyByContact : MonoBehaviour
 			gameController.AddMiss ();
 			AudioSource ballShooting = GameObject.Find ("BallShooting").GetComponent<AudioSource> ();
 			ballShooting.pitch = 0.6f;
-			ballShooting.volume = 0.03f;
+			//ballShooting.volume = 0.03f;
 			ballShooting.Play ();
 			//return;
 		}
