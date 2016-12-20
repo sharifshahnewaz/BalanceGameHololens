@@ -2,8 +2,6 @@
 using System.Collections;
 using System;
 using HoloToolkit.Sharing;
-using UnityEngine.VR.WSA.Persistence;
-using UnityEngine.VR.WSA;
 
 public class GameController : MonoBehaviour
 {
@@ -24,6 +22,7 @@ public class GameController : MonoBehaviour
     private int hit;
     private int miss;
     public bool play=false;
+    private bool gameover = false;
 
 
     private double elapsedTime = 0.0f;
@@ -85,6 +84,12 @@ public class GameController : MonoBehaviour
         {
             play = false;
             displayMessage = "Game\nOver";
+            if (!gameover)
+            {
+                gameover = true;
+                CustomMessages.Instance.SendNetworkMessage("gameover");
+            }
+            
         }
         hitText.GetComponent<TextMesh>().text = "Hit: " + hit;
         missText.GetComponent<TextMesh>().text = "Miss: " + miss;
@@ -144,6 +149,9 @@ public class GameController : MonoBehaviour
                 break;
             case "pause":
                 play = false;
+                break;
+            case "noframe":
+                GameObject.Find("Static base").SetActive(false);
                 break;
 
             default:
