@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
 
     private int hit;
     private int miss;
-    public bool play;
+    public bool play=false;
 
 
     private double elapsedTime = 0.0f;
@@ -39,10 +39,7 @@ public class GameController : MonoBehaviour
     public GameObject missText;
     public GameObject messageText;
 
-    //anchoring related
-    public WorldAnchorStore anchorStore;
-    bool savedAnchor;
-    public WorldAnchor anchor;
+
 
     void Start()
     {
@@ -51,7 +48,7 @@ public class GameController : MonoBehaviour
 
         SharingSessionTracker.Instance.SessionJoined += Instance_SessionJoined;
 
-        play = false;
+        //play = false;
         hit = 0;
         miss = 0;
 
@@ -69,76 +66,20 @@ public class GameController : MonoBehaviour
         StartCoroutine(SpawnWaves());
 
 
-        Destroy(gameObject.GetComponent<WorldAnchor>());
-
-        if (anchorStore != null) anchorStore.Clear();
-
-        WorldAnchorStore.GetAsync(AnchorStoreReady);
-
-        // Adding anchor to model 
-        anchor = gameObject.AddComponent<WorldAnchor>();
-        // Setting initial state of anchor
-        Anchor_OnTrackingChanged(anchor, anchor.isLocated);
-        // Saving anchor to anchor store
-        SaveAnchor(anchor);
-        // subscribing to OntrackingChanged 
-        anchor.OnTrackingChanged += Anchor_OnTrackingChanged;
-
-          }
-
-    // initializes the anchorStore
-    void AnchorStoreReady(WorldAnchorStore store)
-    {
-        anchorStore = store;
-
-    }
-    // Saves the Anchor to anchorStore of this app
-    public void SaveAnchor(WorldAnchor MyWorldAnchor)
-    {
-        // only save anchor once
-        if (!this.savedAnchor)
-        {
-            //adding anchor to the anchor store (app folder)
-            Debug.Log(anchorStore);
-            this.savedAnchor = this.anchorStore.Save("MyAnchor", MyWorldAnchor);
-            if (!this.savedAnchor)
-            {
-                // Anchor failed to save to the store
-                Debug.Log("failed to save anchor!!!!");
-            }
-        }
     }
 
-
-    public void Anchor_OnTrackingChanged(WorldAnchor self, bool located)
-    {
-        // This simply activates/deactivates this object and all children when tracking changes
-        if (located)
-        {
-            Debug.Log("Saving persisted position in callback");
-            bool saved = anchorStore.Save("MyAnchor", self);
-            Debug.Log("saved: " + saved);
-            self.OnTrackingChanged -= Anchor_OnTrackingChanged;
-        }
-    }
 
     void Update()
-    {
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            if (play)
-            {
-                play = false;
+    {        
+            if (!play)
+            {                
                 displayMessage = "'P' to \nplay";
             }
             else
-            {
-                play = true;
+            {               
                 displayMessage = "'P' to \nstop";
             }
-
-        }
+            
 
         if (hit + miss >= totalBall)
         {
@@ -158,7 +99,7 @@ public class GameController : MonoBehaviour
 
         while (true)
         {
-
+            
 
             for (int i = 0; i < hazardCount; i++)
             {
@@ -170,6 +111,7 @@ public class GameController : MonoBehaviour
                 {
                     spawnRotation = Quaternion.LookRotation(spawnPosition - head.transform.position - new Vector3(0, 0.099f, 0.134f));
                 }
+              
                 if (play)
                 {
                     Instantiate(tennisball, spawnPosition, spawnRotation);
