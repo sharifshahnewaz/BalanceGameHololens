@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ClientRole: 0
-  ServerAddress: 192.168.0.102
+  ServerAddress: 192.168.0.103
   ServerPort: 20602
   IsAudioEndpoint: 0
   AutoDiscoverServer: 0
@@ -1658,7 +1658,7 @@ Prefab:
     - target: {fileID: 114332039286969316, guid: 234f51e4712174e489d53f527003c8fa,
         type: 2}
       propertyPath: totalBall
-      value: 5
+      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 234f51e4712174e489d53f527003c8fa, type: 2}

@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour
 {
     public GameObject tennisball;
 
-    public int hazardCount;
+    public int hazardCount = 10;
     public float spawnWait;
     public float startWait;
     public float waveWait;
@@ -21,7 +21,7 @@ public class GameController : MonoBehaviour
 
     private int hit;
     private int miss;
-    public bool play=false;
+    public bool play = false;
     private bool gameover = false;
 
 
@@ -32,7 +32,7 @@ public class GameController : MonoBehaviour
 
 
     public int sampleRate = 10;
-    public String studyCondition;
+   // public String studyCondition;
 
     public GameObject hitText;
     public GameObject missText;
@@ -63,22 +63,21 @@ public class GameController : MonoBehaviour
 
         displayMessage = "'P' to \nplay";
         StartCoroutine(SpawnWaves());
-
-
+        
     }
 
 
     void Update()
-    {        
-            if (!play)
-            {                
-                displayMessage = "'P' to \nplay";
-            }
-            else
-            {               
-                displayMessage = "'P' to \nstop";
-            }
-            
+    {
+        if (!play)
+        {
+            displayMessage = "'P' to \nplay";
+        }
+        else
+        {
+            displayMessage = "'P' to \nstop";
+        }
+
 
         if (hit + miss >= totalBall)
         {
@@ -88,8 +87,9 @@ public class GameController : MonoBehaviour
             {
                 gameover = true;
                 CustomMessages.Instance.SendNetworkMessage("gameover");
+                CustomMessages.Instance.SendNetworkMessage("hit+"+hit+"+miss+"+miss);
             }
-            
+
         }
         hitText.GetComponent<TextMesh>().text = "Hit: " + hit;
         missText.GetComponent<TextMesh>().text = "Miss: " + miss;
@@ -104,7 +104,7 @@ public class GameController : MonoBehaviour
 
         while (true)
         {
-            
+
 
             for (int i = 0; i < hazardCount; i++)
             {
@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
                 {
                     spawnRotation = Quaternion.LookRotation(spawnPosition - head.transform.position - new Vector3(0, 0.099f, 0.134f));
                 }
-              
+
                 if (play)
                 {
                     Instantiate(tennisball, spawnPosition, spawnRotation);
@@ -141,7 +141,8 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("handle command");
         msg.ReadInt64();// important! the id of the message.
-        string command = msg.ReadString(); //the messages from the server;
+        string message = msg.ReadString();
+        string command = message.Split('+')[0]; //the messages from the server;
         switch (command)
         {
             case "play":
@@ -150,10 +151,13 @@ public class GameController : MonoBehaviour
             case "pause":
                 play = false;
                 break;
-            case "noframe":
+            case "nosrf":
+                if(GameObject.Find("Static base")!=null)
                 GameObject.Find("Static base").SetActive(false);
                 break;
-
+            case "totalball":
+                totalBall = Convert.ToInt32(message.Split('+')[1]);
+                break;
             default:
                 break;
         }
