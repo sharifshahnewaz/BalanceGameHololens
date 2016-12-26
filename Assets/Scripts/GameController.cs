@@ -13,7 +13,6 @@ public class GameController : MonoBehaviour
     public float waveWait;
     private GameObject head;
 
-
     //public GUIText scoreText;
     //public GUIText restartText;
     //public GUIText gameOverText;
@@ -144,6 +143,7 @@ public class GameController : MonoBehaviour
         string message = msg.ReadString();
         string command = message.Split('+')[0]; //the messages from the server;
         Debug.Log("Command received - "+command);
+        GameObject srf;
         switch (command)
         {
             case "play":
@@ -156,10 +156,28 @@ public class GameController : MonoBehaviour
                 break;
             case "nosrfstatic":
             case "nosrfdynamic":
-                if (GameObject.Find("Static base")!=null)
-                GameObject.Find("Static base").SetActive(false);
-                CustomMessages.Instance.SendNetworkMessage("srfDisabled");
+                 srf = GameObject.Find("Static base");
+                if ( srf!= null)
+                {
+                    foreach (Renderer r in srf.GetComponentsInChildren<Renderer>()) {
+                        r.enabled = false;
+                    }
+                    CustomMessages.Instance.SendNetworkMessage("srfDisabled");
+                }
                 break;
+            case "srfstatic":
+            case "srfdynamic":
+                 srf = GameObject.Find("Static base");
+                if (srf != null)
+                {
+                    foreach (Renderer r in srf.GetComponentsInChildren<Renderer>())
+                    {
+                        r.enabled = true;
+                    }
+                    CustomMessages.Instance.SendNetworkMessage("srfEnabled");
+                }
+                break;
+
             case "totalball":
                 totalBall = Convert.ToInt32(message.Split('+')[1]);
                 CustomMessages.Instance.SendNetworkMessage("totalBallUpdated");
