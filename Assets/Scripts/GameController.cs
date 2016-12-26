@@ -143,25 +143,31 @@ public class GameController : MonoBehaviour
         msg.ReadInt64();// important! the id of the message.
         string message = msg.ReadString();
         string command = message.Split('+')[0]; //the messages from the server;
+        Debug.Log("Command received - "+command);
         switch (command)
         {
             case "play":
                 play = true;
+                CustomMessages.Instance.SendNetworkMessage("startedPlaying");
                 break;
             case "pause":
                 play = false;
+                CustomMessages.Instance.SendNetworkMessage("stoppedPlaying");
                 break;
-            case "nosrf":
-                if(GameObject.Find("Static base")!=null)
+            case "nosrfstatic":
+            case "nosrfdynamic":
+                if (GameObject.Find("Static base")!=null)
                 GameObject.Find("Static base").SetActive(false);
+                CustomMessages.Instance.SendNetworkMessage("srfDisabled");
                 break;
             case "totalball":
                 totalBall = Convert.ToInt32(message.Split('+')[1]);
+                CustomMessages.Instance.SendNetworkMessage("totalBallUpdated");
                 break;
             default:
                 break;
         }
-        Debug.Log(command);
+       
 
     }
 
@@ -187,6 +193,16 @@ public class GameController : MonoBehaviour
     {
         miss += 1;
         //UpdateScore ();
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (!gameover)
+        {
+            gameover = true;
+            CustomMessages.Instance.SendNetworkMessage("gameover");
+            CustomMessages.Instance.SendNetworkMessage("hit+" + hit + "+miss+" + miss);
+        }
     }
 
 }
